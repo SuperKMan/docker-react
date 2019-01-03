@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t kman/docker-react -f Dockerfile.dev .
+
+script:
+  - docker run kman/docker-react npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-2
+  app: "dockerreact"
+  env: "Dockerreact-env"
+  bucket_name: "S3 Bucket"
+  bucket_path: "dockerreact"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
